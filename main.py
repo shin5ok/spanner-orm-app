@@ -2,10 +2,13 @@
 from sqlalchemy import *
 import click
 import os
-from sqlalchemy import *
+import logging
 
 conn_string: str = os.environ.get("CONN")
 engine = create_engine(conn_string)
+
+logging.basicConfig()
+logging.getLogger('sqlalchemy.engine').setLevel(logging.DEBUG)
 
 @click.group()
 def cli() -> None:
