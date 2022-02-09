@@ -5,8 +5,13 @@ import os
 from sqlalchemy import *
 
 conn_string: str = os.environ.get("CONN")
-engine= create_engine(conn_string)
+engine = create_engine(conn_string)
 
+@click.group()
+def cli():
+    pass
+
+@cli.command()
 def dbinit() -> None:
     metadata = MetaData(bind=engine)
 
@@ -41,7 +46,7 @@ def dbinit() -> None:
     metadata.create_all(engine)
     print("DB initialized")
 
-@click.command()
+@cli.command()
 @click.option("--init", "-i", is_flag=True)
 @click.option("--first_name", "-f")
 @click.option("--last_name", "-l")
@@ -63,4 +68,5 @@ def put(first_name: str, last_name: str, album_title: str, track_title:str, init
         connection.execute(tracks.insert(), {"AlbumId": album_id, "TrackId": 1, "Title": track_title})
 
 if __name__ == '__main__':
-    put()
+    # put()
+    cli()
