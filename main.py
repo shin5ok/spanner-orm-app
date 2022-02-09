@@ -8,7 +8,7 @@ conn_string: str = os.environ.get("CONN")
 engine = create_engine(conn_string)
 
 @click.group()
-def cli():
+def cli() -> None:
     pass
 
 @cli.command()
@@ -52,7 +52,7 @@ def dbinit() -> None:
 @click.option("--last_name", "-l")
 @click.option("--album_title", "-a")
 @click.option("--track_title", "-t")
-def put(first_name: str, last_name: str, album_title: str, track_title:str, init: bool) -> any:
+def put(first_name: str, last_name: str, album_title: str, track_title:str, init: bool) -> None:
     if init:
         dbinit()
     import uuid
@@ -67,6 +67,17 @@ def put(first_name: str, last_name: str, album_title: str, track_title:str, init
         connection.execute(albums.insert(), {"AlbumId": album_id, "Title": album_title, "SingerId": singer_id})
         connection.execute(tracks.insert(), {"AlbumId": album_id, "TrackId": 1, "Title": track_title})
 
+@cli.command()
+@click.option("--singer_name", "-s")
+def get(singer_name: str) -> None:
+    singers = Table("Singers", MetaData(bind=engine), autoload=True)
+    with engine.begin() as connection:
+        if singer_name:
+            s = connection.execute(select([singers]).where(singers.c.FirstName == singer_name))
+        else:
+            s = connection.execute(select([singers]))
+        for row in s:
+            print(row)
+
 if __name__ == '__main__':
-    # put()
     cli()
