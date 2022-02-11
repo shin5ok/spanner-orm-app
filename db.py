@@ -86,7 +86,7 @@ def reading(singer_name: str, show: bool) -> any:
             s = connection.execute(select([singers]))
         results = [[v.FirstName, v.LastName] for v in s]
     if show:
-        (join("\n", s))
+        print(join("\n", s))
     return results
 
 if __name__ == '__main__':
