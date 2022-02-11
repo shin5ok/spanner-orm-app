@@ -55,6 +55,9 @@ def dbinit() -> None:
 @click.option("--album_title", "-a")
 @click.option("--track_title", "-t")
 def put(first_name: str, last_name: str, album_title: str, track_title:str) -> None:
+    writing(first_name, last_name, album_title, track_title)
+
+def writing(first_name: str, last_name: str, album_title: str, track_title:str) -> None:
     import uuid
     singers = Table("Singers", MetaData(bind=engine), autoload=True)
     albums = Table("Albums", MetaData(bind=engine), autoload=True)
@@ -71,16 +74,20 @@ def put(first_name: str, last_name: str, album_title: str, track_title:str) -> N
 @click.option("--singer_name", "-s")
 @click.option("--show", is_flag=True)
 def get(singer_name: str, show: bool) -> any:
+    reading(singer_name, show)
+
+def reading(singer_name: str, show: bool) -> any:
     singers = Table("Singers", MetaData(bind=engine), autoload=True)
+    results = []
     with engine.begin() as connection:
         if singer_name:
             s = connection.execute(select([singers]).where(singers.c.FirstName == singer_name))
         else:
             s = connection.execute(select([singers]))
-        if show:
-            for row in s:
-                print(row)
-        return s
+        results = [[v.FirstName, v.LastName] for v in s]
+    if show:
+        (join("\n", s))
+    return results
 
 if __name__ == '__main__':
     cli()
