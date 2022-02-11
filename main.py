@@ -50,14 +50,11 @@ def dbinit() -> None:
     print("DB initialized")
 
 @cli.command()
-@click.option("--init", "-i", is_flag=True)
 @click.option("--first_name", "-f")
 @click.option("--last_name", "-l")
 @click.option("--album_title", "-a")
 @click.option("--track_title", "-t")
 def put(first_name: str, last_name: str, album_title: str, track_title:str, init: bool) -> None:
-    if init:
-        dbinit()
     import uuid
     singers = Table("Singers", MetaData(bind=engine), autoload=True)
     albums = Table("Albums", MetaData(bind=engine), autoload=True)
@@ -81,6 +78,7 @@ def get(singer_name: str) -> None:
             s = connection.execute(select([singers]))
         for row in s:
             print(row)
+
 
 if __name__ == '__main__':
     cli()
