@@ -24,6 +24,11 @@ def _get(f):
     except Exception as e:
         message = str(e)
     return json.dumps(dict(message=message, results=results))
+
+@app.route("/test")
+def _check():
+    return "ok\n"
+
 if __name__ == '__main__':
     app.run(port=os.environ.get("PORT", 8080))
 
