@@ -5,7 +5,7 @@ import os
 import logging
 
 conn_string: str = os.environ.get("CONN")
-engine = create_engine(conn_string)
+engine = create_engine("spanner:///"+conn_string)
 
 logging.basicConfig()
 logging.getLogger('sqlalchemy.engine').setLevel(logging.DEBUG)
