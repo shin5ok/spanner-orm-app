@@ -2,6 +2,7 @@
 from sqlalchemy import *
 import click
 import os
+import json
 import logging
 
 conn_string: str = os.environ.get("CONN")
@@ -84,9 +85,9 @@ def reading(singer_name: str, show: bool) -> any:
             s = connection.execute(select([singers]).where(singers.c.FirstName == singer_name))
         else:
             s = connection.execute(select([singers]))
-        results = [[v.FirstName, v.LastName] for v in s]
+        results = [{"name": f"{v.FirstName} {v.LastName}", "singer_id": v.SingerId} for v in s]
     if show:
-        print(join("\n", s))
+        print(json.dumps(results, indent=2))
     return results
 
 if __name__ == '__main__':
