@@ -8,8 +8,11 @@ import logging
 conn_string: str = os.environ.get("CONN")
 engine = create_engine("spanner:///"+conn_string)
 
+debug_flag: bool = "DEBUG" in os.environ
 logging.basicConfig()
-logging.getLogger('sqlalchemy.engine').setLevel(logging.DEBUG)
+loggingConfig = logging.getLogger('sqlalchemy.engine')
+if debug_flag:
+    loggingConfig.setLevel(logging.DEBUG)
 
 @click.group()
 def cli() -> None:
