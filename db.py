@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 
 from sqlalchemy import *
 import click
@@ -86,14 +87,17 @@ def get(singer_name: str, show: bool) -> any:
 def reading(singer_name: str, show: bool) -> any:
     singers = Table("Singers", MetaData(bind=engine), autoload=True)
     results = []
-    with engine.begin() as connection:
-        if singer_name:
-            s = connection.execute(select([singers]).where(singers.c.FirstName == singer_name))
-        else:
-            s = connection.execute(select([singers]))
-        results = [{"name": f"{v.FirstName} {v.LastName}", "singer_id": v.SingerId} for v in s]
-    if show:
-        print(json.dumps(results, indent=2))
+    try:
+        with engine.begin() as connection:
+            if singer_name:
+                s = connection.execute(select([singers]).where(singers.c.FirstName == singer_name))
+            else:
+                s = connection.execute(select([singers]))
+            results = [{"name": f"{v.FirstName} {v.LastName}", "singer_id": v.SingerId} for v in s]
+        if show:
+            print(json.dumps(results, indent=2))
+    except Exception as e:
+        print(str(e))
     return results
 
 if __name__ == '__main__':
