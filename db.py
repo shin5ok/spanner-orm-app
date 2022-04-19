@@ -67,12 +67,15 @@ def writing(first_name: str, last_name: str, album_title: str, track_title:str) 
     albums = Table("Albums", MetaData(bind=engine), autoload=True)
     tracks = Table("Tracks", MetaData(bind=engine), autoload=True)
 
-    with engine.begin() as connection:
-        singer_id = str(uuid.uuid4())
-        connection.execute(singers.insert(), {"SingerId": singer_id, "FirstName": first_name, "LastName": last_name})
-        album_id = str(uuid.uuid4())
-        connection.execute(albums.insert(), {"AlbumId": album_id, "Title": album_title, "SingerId": singer_id})
-        connection.execute(tracks.insert(), {"AlbumId": album_id, "TrackId": 1, "Title": track_title})
+    try:
+        with engine.begin() as connection:
+            singer_id = str(uuid.uuid4())
+            connection.execute(singers.insert(), {"SingerId": singer_id, "FirstName": first_name, "LastName": last_name})
+            album_id = str(uuid.uuid4())
+            connection.execute(albums.insert(), {"AlbumId": album_id, "Title": album_title, "SingerId": singer_id})
+            connection.execute(tracks.insert(), {"AlbumId": album_id, "TrackId": 1, "Title": track_title})
+    except Exception as e:
+        print(str(e))
 
 @cli.command()
 @click.option("--singer_name", "-s")
