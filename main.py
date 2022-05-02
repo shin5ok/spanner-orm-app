@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 
-from flask import Flask, request
+from flask import Flask, jsonify
 import db
-import json
 import os
 
 app = Flask(__name__)
@@ -14,7 +13,7 @@ def _put(f, l, a, t):
         message = f"/{f}/{l}/{a}/{t} has been created"
     except Exception as e:
         message = str(e)
-    return json.dumps(dict(message=message))
+    return jsonify(dict(message=message))
 
 
 @app.route("/<f>", methods=["GET"])
@@ -25,7 +24,7 @@ def _get(f):
         message = "got results"
     except Exception as e:
         message = str(e)
-    return json.dumps(dict(message=message, results=results))
+    return jsonify(dict(message=message, results=results))
 
 @app.route("/")
 @app.route("/test")
