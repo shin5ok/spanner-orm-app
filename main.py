@@ -27,11 +27,8 @@ def _get(f):
     return jsonify(dict(message=message, results=results))
 
 @app.route("/")
-@app.route("/test")
 def _check():
     return "ok\n"
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=int(os.environ.get("PORT", 8080)))
-
-
