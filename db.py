@@ -8,6 +8,8 @@ import logging
 from typing import *
 
 CONN_STRING: str = os.environ.get("CONN", "")
+print(CONN_STRING)
+engine = create_engine("spanner:///"+CONN_STRING)
 
 debug_flag: bool = "DEBUG" in os.environ
 logging.basicConfig()
@@ -17,7 +19,6 @@ if debug_flag:
 
 @click.group()
 def cli() -> None:
-    engine = create_engine("spanner:///"+CONN_STRING)
     pass
 
 @cli.command()
