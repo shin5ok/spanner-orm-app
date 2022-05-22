@@ -5,9 +5,9 @@ import click
 import os
 import json
 import logging
+from typing import *
 
-CONN_STRING: str = os.environ.get("CONN")
-engine = create_engine("spanner:///"+CONN_STRING)
+CONN_STRING: str = os.environ.get("CONN", "")
 
 debug_flag: bool = "DEBUG" in os.environ
 logging.basicConfig()
@@ -17,6 +17,7 @@ if debug_flag:
 
 @click.group()
 def cli() -> None:
+    engine = create_engine("spanner:///"+CONN_STRING)
     pass
 
 @cli.command()
@@ -64,6 +65,7 @@ def put(first_name: str, last_name: str, album_title: str, track_title:str) -> N
 
 def writing(first_name: str, last_name: str, album_title: str, track_title:str) -> None:
     import uuid
+
     singers = Table("Singers", MetaData(bind=engine), autoload=True)
     albums = Table("Albums", MetaData(bind=engine), autoload=True)
     tracks = Table("Tracks", MetaData(bind=engine), autoload=True)
@@ -81,10 +83,10 @@ def writing(first_name: str, last_name: str, album_title: str, track_title:str) 
 @cli.command()
 @click.option("--singer_name", "-s")
 @click.option("--show", is_flag=True)
-def get(singer_name: str, show: bool) -> any:
+def get(singer_name: str, show: bool) -> Any:
     reading(singer_name, show)
 
-def reading(singer_name: str, show: bool) -> any:
+def reading(singer_name: str, show: bool) -> Any:
     singers = Table("Singers", MetaData(bind=engine), autoload=True)
     results = []
     try:
