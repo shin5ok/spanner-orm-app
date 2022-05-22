@@ -1,3 +1,4 @@
+google-cloud-spanner
 sqlalchemy-spanner
 click
 flask
