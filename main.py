@@ -1,22 +1,23 @@
 #!/usr/bin/env python
 
-from flask import Flask, jsonify
+from fastapi import FastAPI, Depends,Response
+import uvicorn
 import db
 import os
 
-app = Flask(__name__)
+app = FastAPI()
 
-@app.route("/<f>/<l>/<a>/<t>", methods=["POST"])
+@app.post("/<f>/<l>/<a>/<t>")
 def _put(f, l, a, t):
     try:
         db.writing(f, l, a, t)
         message = f"/{f}/{l}/{a}/{t} has been created"
     except Exception as e:
         message = str(e)
-    return jsonify(dict(message=message))
+    return Response(dict(message=message))
 
 
-@app.route("/<f>", methods=["GET"])
+@app.get("/<f>")
 def _get(f):
     results = []
     try:
@@ -24,11 +25,18 @@ def _get(f):
         message = "got results"
     except Exception as e:
         message = str(e)
-    return jsonify(dict(message=message, results=results))
+    return Response(dict(message=message, results=results))
 
-@app.route("/")
+@app.get("/")
 def _check():
     return "ok\n"
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=int(os.environ.get("PORT", 8080)))
+    port = os.environ.get("PORT", "8080")
+    options = {
+            'port': int(port),
+            'host': '0.0.0.0',
+            'workers': 2,
+            'reload': True,
+        }
+    uvicorn.run("main:app", **options)
