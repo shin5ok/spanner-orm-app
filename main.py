@@ -18,7 +18,7 @@ def _put(f, l, a, t):
 
 
 @app.get("/<f>")
-def _get(f):
+async def _get(f):
     results = []
     try:
         results = db.reading(f, False)
